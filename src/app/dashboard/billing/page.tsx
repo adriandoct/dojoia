@@ -39,7 +39,7 @@ export default function BillingPage() {
             created_at
           )
         `)
-        .eq('user_id', session?.user.id)
+        .eq('user_id', (session?.user as any)?.id)
         .order('created_at', { ascending: false })
         .limit(1)
         .maybeSingle()
@@ -53,7 +53,7 @@ export default function BillingPage() {
       const { data: paymentsData } = await supabase
         .from('payments')
         .select('*')
-        .eq('user_id', session?.user.id)
+        .eq('user_id', (session?.user as any)?.id)
         .order('created_at', { ascending: false })
         .limit(10)
 
