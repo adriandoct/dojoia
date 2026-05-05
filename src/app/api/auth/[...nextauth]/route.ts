@@ -2,6 +2,19 @@ import NextAuth, { type NextAuthOptions } from 'next-auth'
 import { type Database } from '@/types/database'
 import { createClient } from '@/lib/supabase/server'
 
+declare module 'next-auth' {
+  interface Session {
+    user: {
+      id?: string
+      name?: string | null
+      email?: string | null
+      image?: string | null
+      role?: string
+      profile?: any
+    }
+  }
+}
+
 export const authOptions: NextAuthOptions = {
   providers: [
     {
@@ -38,8 +51,8 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (token && session.user) {
-        session.user.id = token.sub as string
-        session.user.role = (token as any).role
+        ;(session.user as any).id = token.sub as string
+        ;(session.user as any).role = (token as any).role
       }
 
       if (token?.sub && session.user) {
@@ -52,7 +65,7 @@ export const authOptions: NextAuthOptions = {
             .single()
 
           if (profile) {
-            session.user.profile = profile as any
+            ;(session.user as any).profile = profile
           }
         } catch (error) {
           console.error('Error fetching profile:', error)
