@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
       }
     )
 
-    await supabase
+    await (supabase as any)
       .from('subscriptions')
       .update({
         cancel_at_period_end: true,
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
   } catch (error: any) {
     console.error('Cancel subscription error:', error)
 
-    if (error.statusCode === 404) {
+    if ((error as any).statusCode === 404) {
       return NextResponse.json(
         { error: 'Subscription not found' },
         { status: 404 }
