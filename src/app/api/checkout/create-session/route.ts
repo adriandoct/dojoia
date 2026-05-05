@@ -2,7 +2,7 @@ import { type NextRequest, type NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { createCheckoutSession } from '@/lib/services/stripe'
-import { supabaseServer } from '@/lib/supabase/client'
+import { createClient } from '@/lib/supabase/server'
 
 /**
  * POST /api/checkout/create-session
@@ -33,8 +33,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Get user profile
-    const { data: profile } = await supabaseServer
+    const supabase = await createClient()
+    const { data: profile } = await supabase
       .from('profiles')
       .select('id')
       .eq('user_id', session.user.id)
@@ -47,7 +47,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create checkout session
     const result = await createCheckoutSession(
       profile.id,
       planId as any,

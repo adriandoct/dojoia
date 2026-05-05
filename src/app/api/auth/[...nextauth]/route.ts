@@ -1,6 +1,6 @@
 import NextAuth, { type NextAuthOptions } from 'next-auth'
 import { type Database } from '@/types/database'
-import { supabaseServer } from '@/lib/supabase/client'
+import { createClient } from '@/lib/supabase/server'
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -14,7 +14,6 @@ export const authOptions: NextAuthOptions = {
         url: `${process.env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/authorize`,
         params: {
           provider: 'google',
-          // redirect_uri will be handled by NextAuth
         },
       },
       token: `${process.env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/token`,
@@ -43,19 +42,21 @@ export const authOptions: NextAuthOptions = {
         session.user.role = (token as any).role
       }
 
-      // Fetch full profile from Supabase
-      try {
-        const { data: profile } = await supabaseServer
-          .from('profiles')
-          .select('*')
-          .eq('user_id', session.user.id)
-          .single()
+      if (token?.sub) {
+        try {
+          const supabase = await createClient()
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('user_id', token.sub)
+            .single()
 
-        if (profile) {
-          session.user.profile = profile as any
+          if (profile) {
+            session.user.profile = profile as any
+          }
+        } catch (error) {
+          console.error('Error fetching profile:', error)
         }
-      } catch (error) {
-        console.error('Error fetching profile:', error)
       }
 
       return session
@@ -63,7 +64,7 @@ export const authOptions: NextAuthOptions = {
   },
   session: {
     strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    maxAge: 30 * 24 * 60 * 60,
   },
   pages: {
     signIn: '/login',

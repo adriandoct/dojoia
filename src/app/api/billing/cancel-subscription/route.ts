@@ -2,6 +2,7 @@ import { type NextRequest, type NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import Stripe from 'stripe'
+import { createClient } from '@/lib/supabase/server'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
@@ -30,15 +31,15 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Cancel subscription at period end
-    const updatedSubscription = await stripe.subscriptions.update(
+    const supabase = await createClient()
+
+    await stripe.subscriptions.update(
       subscriptionId,
       {
         cancel_at_period_end: true,
       }
     )
 
-    // Update our DB
     await supabase
       .from('subscriptions')
       .update({
@@ -50,7 +51,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       message: 'Subscription will be canceled at the end of the current period',
-      subscription: updatedSubscription,
     })
   } catch (error: any) {
     console.error('Cancel subscription error:', error)
@@ -68,5 +68,3 @@ export async function POST(request: NextRequest) {
     )
   }
 }
-
-import { supabaseServer } from '@/lib/supabase/client'
