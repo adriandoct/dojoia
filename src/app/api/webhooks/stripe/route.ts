@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     const event = await handleStripeWebhook(Buffer.from(body), signature)
 
     return NextResponse.json(
-      { received: true, event: event.type },
+      { received: true, event: (event as any).type },
       { status: 200 }
     )
   } catch (error: any) {

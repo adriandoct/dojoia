@@ -251,7 +251,7 @@ export async function handleStripeWebhook(payload: Buffer, signature: string) {
       console.log(`Unhandled event type: ${event.type}`)
   }
 
-  return { received: true }
+  return { received: true, type: event.type }
 }
 
 /**
