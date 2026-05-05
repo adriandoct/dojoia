@@ -1,0 +1,70 @@
+{
+  "version": "1.0",
+  "description": "DOJOIA - Plataforma educativa premium con IA",
+  "author": "DOJOIA Team",
+  "license": "PROPRIETARY",
+  "homepage": "https://dojoia.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adriandoct/dojoia.git"
+  },
+  "bugs": {
+    "url": "https://github.com/adriandoct/dojoia/issues"
+  },
+  "keywords": [
+    "education",
+    "kumon",
+    "ai",
+    "learning",
+    "gamification",
+    "nextjs",
+    "supabase",
+    "openai",
+    "dojo",
+    "martial-arts"
+  ],
+  "engagement": {
+    "disqus": "",
+    "sentry": "",
+    "analytics": ""
+  },
+  "build": {
+    "builder": "nixpacks",
+    "buildCommand": "npm ci && npm run build",
+    "publish": "npm start"
+  },
+  "services": [
+    {
+      "name": "dojoia-web",
+      "type": "web",
+      "runtime": "node",
+      "region": "oregon",
+      "plan": "starter",
+      "buildCommand": "npm ci && npm run build",
+      "startCommand": "npm start",
+      "envVars": {
+        "NODE_ENV": {
+          "value": "production"
+        },
+        "NEXTAUTH_SECRET": {
+          "generateValue": true,
+          "description": "Generate with: openssl rand -base64 32"
+        },
+        "NEXTAUTH_URL": {
+          "value": "https://dojoia.onrender.com"
+        },
+        "NEXT_PUBLIC_APP_URL": {
+          "value": "https://dojoia.onrender.com"
+        }
+      }
+    }
+  ],
+  "databases": [
+    {
+      "name": "dojoia-db",
+      "type": "postgresql",
+      "plan": "starter",
+      "ipAllowlist": []
+    }
+  ]
+}
