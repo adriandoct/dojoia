@@ -1,4 +1,4 @@
-import { type NextRequest, type NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { createCheckoutSession } from '@/lib/services/stripe'
@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
     const { data: profile } = await supabase
       .from('profiles')
       .select('id')
-      .eq('user_id', session.user.id)
+      .eq('user_id', (session.user as any).id)
       .single()
 
     if (!profile) {
