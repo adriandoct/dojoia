@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
     }
 
     const result = await createCheckoutSession(
-      profile.id,
+      (profile as any).id,
       planId as any,
       successUrl || `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/billing?success=true`,
       cancelUrl || `${process.env.NEXT_PUBLIC_APP_URL}/pricing?cancelled=true`
