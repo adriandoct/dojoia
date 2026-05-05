@@ -331,7 +331,7 @@ export async function POST_EXERCISE_ANSWER(request: NextRequest, { params }: any
  */
 async function checkAndAwardAchievements(
   studentId: string,
-  progress: { lesson_completed?: boolean }
+  progress: { lesson_completed?: boolean; level_up?: boolean }
 ) {
   // Get current counts
   const { data: stats } = await supabase.rpc(
