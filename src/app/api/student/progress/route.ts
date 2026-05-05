@@ -238,8 +238,10 @@ export async function POST_LESSON_COMPLETE(request: NextRequest, { params }: any
 
     if (updateError) throw updateError
 
-    // Check for achievements
-    await checkAndAwardAchievements(user.id, { lesson_completed: true })
+// Check for achievements
+     if (user.id) {
+       await checkAndAwardAchievements(user.id, { lesson_completed: true })
+     }
 
     return NextResponse.json({
       success: true,
