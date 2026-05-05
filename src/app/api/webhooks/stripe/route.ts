@@ -1,4 +1,4 @@
-import { type NextRequest, type NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { headers } from 'next/headers'
 import { handleStripeWebhook } from '@/lib/services/stripe'
