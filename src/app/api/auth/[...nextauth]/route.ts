@@ -37,12 +37,12 @@ export const authOptions: NextAuthOptions = {
       return token
     },
     async session({ session, token }) {
-      if (token) {
-        session.user.id = token.sub
+      if (token && session.user) {
+        session.user.id = token.sub as string
         session.user.role = (token as any).role
       }
 
-      if (token?.sub) {
+      if (token?.sub && session.user) {
         try {
           const supabase = await createClient()
           const { data: profile } = await supabase
