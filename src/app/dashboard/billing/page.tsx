@@ -46,7 +46,7 @@ export default function BillingPage() {
 
       if (subData) {
         setSubscription(subData)
-        setCurrentPlan(PLANS.find(p => p.id === subData.plan))
+        setCurrentPlan(PLANS.find(p => p.id === (subData as any).plan))
       }
 
       // Get payment history
