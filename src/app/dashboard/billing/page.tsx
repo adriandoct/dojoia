@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Spinner } from '@/components/ui/spinner'
-import { CreditCard, Calendar, AlertCircle, CheckCircle, XCircle, Crown, RefreshCw } from 'lucide-react'
+import { CreditCard, Calendar, AlertCircle, CheckCircle, XCircle, Crown, RefreshCw, Sparkles } from 'lucide-react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 
