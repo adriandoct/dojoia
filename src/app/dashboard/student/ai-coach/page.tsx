@@ -112,7 +112,7 @@ export default function AICoachPage() {
 
     try {
       // Get student context
-      const { data: profile } = await supabase
+      const { data: profile } = await (supabase as any)
         .from('profiles')
         .select(`
           *,
@@ -120,7 +120,7 @@ export default function AICoachPage() {
           progress:student_progress(*)
         `)
         .eq('user_id', session.user.id!)
-        .single() as { data: any }
+        .single()
 
       // Build AI context
       const context = {
