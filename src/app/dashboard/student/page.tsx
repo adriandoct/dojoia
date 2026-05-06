@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase/client'
@@ -33,7 +34,7 @@ export default function StudentDashboardPage() {
   const [loading, setLoading] = useState(true)
   const [profile, setProfile] = useState<Profile | null>(null)
   const [level, setLevel] = useState<Level | null>(null)
-  const [recentLessons, setRecentLessons] = useState<(Lesson & { progress?: StudentProgress })[]>([])
+  const [recentLessons, setRecentLessons] = useState<(Lesson & { progress?: Partial<StudentProgress> })[]>([])
   const [dailyMission, setDailyMission] = useState<{
     missions_completed: number
     total_missions: number
@@ -44,27 +45,31 @@ export default function StudentDashboardPage() {
     if (status === 'loading' || !session) return
 
     async function fetchData() {
+      const userId = session?.user?.id
+      if (!userId) return
+
       try {
         // Fetch student profile with level
         const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
+          .from<Profile>('profiles')
           .select(`
             *,
             level:levels (*)
           `)
-          .eq('user_id', session.user.id)
+          .eq('user_id', userId)
           .single()
 
-        if (profileError) throw profileError
-        setProfile(profileData)
-        setLevel(profileData.level)
+        if (profileError || !profileData) throw profileError || new Error('Perfil no encontrado')
+        const typedProfileData = profileData as Profile
+        setProfile(typedProfileData)
+        setLevel(typedProfileData.level || null)
 
         // Fetch today's daily mission progress
         const today = new Date().toISOString().split('T')[0]
         const { data: missionData } = await supabase
           .from('daily_missions')
           .select('*')
-          .eq('student_id', profileData.id)
+          .eq('student_id', typedProfileData.id)
           .eq('date', today)
           .maybeSingle()
 
@@ -98,15 +103,15 @@ export default function StudentDashboardPage() {
               level:levels (id, name, code, color_hex)
             )
           `)
-          .eq('student_id', profileData.id)
+          .eq('student_id', typedProfileData.id)
           .neq('status', 'not_started')
           .order('started_at', { ascending: false })
           .limit(5)
 
         if (lessonsData) {
           setRecentLessons(
-            lessonsData.map((item) => ({
-              ...item.lesson,
+            (lessonsData as any[]).map((item) => ({
+              ...(item.lesson as Lesson),
               progress: {
                 status: item.status,
                 started_at: item.started_at,

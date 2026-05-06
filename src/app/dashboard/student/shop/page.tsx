@@ -22,15 +22,17 @@ export default function ShopPage() {
   }, [])
 
   async function fetchShopData() {
+    if (!session?.user?.id) return
+
     try {
       const { data: profile } = await supabase
         .from('profiles')
         .select('dojicoins_balance')
-        .eq('user_id', session?.user.id)
+        .eq('user_id', session.user.id)
         .single()
 
       if (profile) {
-        setUserCoins(profile.dojicoins_balance)
+        setUserCoins((profile as any).dojicoins_balance)
       }
 
       const { data: shopItems } = await supabase
@@ -68,6 +70,8 @@ export default function ShopPage() {
   }
 
   const handlePurchase = async (item: ShopItem) => {
+    if (!session?.user?.id) return
+
     if (userCoins < item.price_dojicoins) {
       alert('No tienes suficientes DOJICOIN')
       return
@@ -78,8 +82,8 @@ export default function ShopPage() {
 
     try {
       // Start transaction
-      const { error: transactionError } = await supabase.rpc('purchase_item', {
-        p_student_id: session?.user.id,
+      const { error: transactionError } = await (supabase.rpc as any)('purchase_item', {
+        p_student_id: session.user.id,
         p_item_id: item.id,
         p_price: item.price_dojicoins,
       })

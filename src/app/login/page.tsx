@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
-import { Avatar, Sparkles, Users, GraduationCap } from 'lucide-react'
+import { Sparkles, Users, GraduationCap } from 'lucide-react'
 
 const loginSchema = z.object({
   email: z.string().email('Email inválido'),
