@@ -48,7 +48,7 @@ export default function AICoachPage() {
           *,
           conversation:ai_conversations(*)
         `)
-        .eq('conversation.student_id', session.user.id)
+        .eq('conversation.student_id', (session.user as any)?.id)
         .order('created_at', { ascending: true })
         .limit(50)
 
