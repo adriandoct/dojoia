@@ -297,7 +297,7 @@ export default function BillingPage() {
               </CardHeader>
               <CardContent>
                 <ul className="space-y-3">
-                  {currentPlan?.features.map((feature: string, i) => (
+                  {currentPlan?.features.map((feature: string, i: number) => (
                     <li key={i} className="flex items-start gap-2">
                       <CheckCircle className="w-4 h-4 text-green-500 mt-0.5" />
                       <span className="text-sm">{feature}</span>
