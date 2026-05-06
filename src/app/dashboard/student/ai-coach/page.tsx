@@ -147,13 +147,13 @@ export default function AICoachPage() {
 
 // Save messages to DB
       await Promise.all([
-        supabase.from('ai_messages').insert([{
+        (supabase as any).from('ai_messages').insert([{
           conversation_id: conversationId,
           role: 'user',
           content: content.trim(),
           tokens_used: content.length / 4, // Approximation
         }]),
-        supabase.from('ai_messages').insert([{
+        (supabase as any).from('ai_messages').insert([{
           conversation_id: conversationId,
           role: 'assistant',
           content: aiResponse,
