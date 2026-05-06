@@ -8,9 +8,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
+import { Send, Bot, Sparkles, Lightbulb, Trophy, Target, RotateCcw } from 'lucide-react'
 import { Avatar } from '@/components/ui/avatar'
 import { Spinner, LoadingCard } from '@/components/ui/spinner'
-import { Send, Bot, User, Sparkles, Lightbulb, Trophy, Target, RotateCcw } from 'lucide-react'
 import { generateAIResponse } from '@/lib/services/openai'
 import { formatDate } from '@/lib/utils/helpers'
 import type { AIMessage } from '@/types'
@@ -119,8 +119,8 @@ export default function AICoachPage() {
           level:levels(*),
           progress:student_progress(*)
         `)
-        .eq('user_id', session.user.id)
-        .single()
+        .eq('user_id', session.user.id!)
+        .single() as { data: any }
 
       // Build AI context
       const context = {
@@ -145,20 +145,20 @@ export default function AICoachPage() {
       // Get AI response
       const aiResponse = await generateAIResponse(context, content)
 
-      // Save messages to DB
+// Save messages to DB
       await Promise.all([
-        supabase.from('ai_messages').insert({
+        supabase.from('ai_messages').insert([{
           conversation_id: conversationId,
           role: 'user',
           content: content.trim(),
           tokens_used: content.length / 4, // Approximation
-        }),
-        supabase.from('ai_messages').insert({
+        }]),
+        supabase.from('ai_messages').insert([{
           conversation_id: conversationId,
           role: 'assistant',
           content: aiResponse,
           tokens_used: aiResponse.length / 4,
-        }),
+        }]),
       ])
 
       // Add assistant message to state
@@ -167,6 +167,8 @@ export default function AICoachPage() {
         role: 'assistant',
         content: aiResponse,
         created_at: new Date().toISOString(),
+        conversation_id: conversationId,
+        tokens_used: 0,
       }
 
       setMessages((prev) => [...prev, assistantMessage])
@@ -179,6 +181,8 @@ export default function AICoachPage() {
         role: 'assistant',
         content: 'Lo siento, tuve un problema para responder. Por favor, intenta de nuevo más tarde. 🥋',
         created_at: new Date().toISOString(),
+        conversation_id: conversationId,
+        tokens_used: 0,
       }
       setMessages((prev) => [...prev, errorMessage])
     } finally {
