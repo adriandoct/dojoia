@@ -59,9 +59,9 @@ export default function AICoachPage() {
             role: m.role,
             content: m.content,
             created_at: m.created_at,
-            conversation_id: null,
+            conversation_id: data[0]?.conversation?.id || '',
             tokens_used: 0,
-          }))
+          })) as any
         )
         if (data[0]?.conversation?.id) {
           setConversationId(data[0].conversation.id)
