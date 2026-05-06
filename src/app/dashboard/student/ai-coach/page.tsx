@@ -52,19 +52,20 @@ export default function AICoachPage() {
         .order('created_at', { ascending: true })
         .limit(50)
 
-      if (data) {
+      const messagesData = data as any
+      if (messagesData) {
         setMessages(
-          data.map((m) => ({
+          messagesData.map((m: any) => ({
             id: m.id,
             role: m.role,
             content: m.content,
             created_at: m.created_at,
-            conversation_id: data[0]?.conversation?.id || '',
+            conversation_id: messagesData[0]?.conversation?.id || '',
             tokens_used: 0,
-          })) as any
+          }))
         )
-        if (data[0]?.conversation?.id) {
-          setConversationId(data[0].conversation.id)
+        if (messagesData[0]?.conversation?.id) {
+          setConversationId(messagesData[0].conversation.id)
         } else {
           createNewConversation()
         }
