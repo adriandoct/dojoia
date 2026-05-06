@@ -105,7 +105,6 @@ export default function AICoachPage() {
       conversation_id: conversationId,
       tokens_used: 0,
     }
-    }
 
     setMessages((prev) => [...prev, userMessage])
     setInput('')
@@ -195,9 +194,9 @@ export default function AICoachPage() {
     handleSendMessage(suggestion)
   }
 
-  function clearConversation() {
+  async function clearConversation() {
     setMessages([])
-    createNewConversation()
+    await createNewConversation()
   }
 
   return (
