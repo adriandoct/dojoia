@@ -81,7 +81,7 @@ export default function AICoachPage() {
   async function createNewConversation() {
     if (!session) return
 
-    const { data } = await supabase
+    const { data } = await (supabase as any)
       .from('ai_conversations')
       .insert({
         student_id: (session.user as any)?.id,
