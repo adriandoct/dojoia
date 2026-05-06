@@ -50,8 +50,8 @@ export default function StudentDashboardPage() {
 
       try {
         // Fetch student profile with level
-        const { data: profileData, error: profileError } = await supabase
-          .from<Profile>('profiles')
+        const { data: profileData, error: profileError } = await (supabase as any)
+          .from('profiles')
           .select(`
             *,
             level:levels (*)
