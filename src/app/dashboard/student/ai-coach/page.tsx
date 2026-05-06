@@ -59,6 +59,8 @@ export default function AICoachPage() {
             role: m.role,
             content: m.content,
             created_at: m.created_at,
+            conversation_id: null,
+            tokens_used: 0,
           }))
         )
         if (data[0]?.conversation?.id) {
@@ -81,7 +83,7 @@ export default function AICoachPage() {
     const { data } = await supabase
       .from('ai_conversations')
       .insert({
-        student_id: session.user.id,
+        student_id: (session.user as any)?.id,
         module_code: null, // General chat
         context: {},
       })
