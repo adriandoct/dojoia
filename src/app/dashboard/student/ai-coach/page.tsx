@@ -102,6 +102,9 @@ export default function AICoachPage() {
       role: 'user',
       content: content.trim(),
       created_at: new Date().toISOString(),
+      conversation_id: conversationId,
+      tokens_used: 0,
+    }
     }
 
     setMessages((prev) => [...prev, userMessage])
